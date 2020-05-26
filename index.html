@@ -14,56 +14,45 @@
 <script> 
  
 create_azle(function() {
-
     // YOUR AZLE FUNCTIONS HERE
-    
     az.load_font("Ubuntu")
-    
     az.style_body({
         "background": "#303952",
         "font-family": "Ubuntu",
-        "min-width" : "1150px"
+        "min-width": "1150px"
     })
-    
     az.add_sections({
-    	"this_class": "my_sections",
-    	"sections": 1
-	})
-	
-	az.style_sections("my_sections", 1, {
-	    "background" : "#ea8685",
-	    "border-radius" : "6px",
-	    "height" : "auto"
-	})
-	
-	az.add_layout("my_sections", 1, {
+        "this_class": "my_sections",
+        "sections": 1
+    })
+    az.style_sections("my_sections", 1, {
+        "background": "#ea8685",
+        "border-radius": "6px",
+        "height": "auto"
+    })
+    az.add_layout("my_sections", 1, {
         "this_class": "my_layout",
         "row_class": "my_layout_rows",
         "cell_class": "my_layout_cells",
         "number_of_rows": 2,
         "number_of_columns": 1
     })
-    
     az.style_layout("my_layout", 1, {
-        "width" : "100%",
-        "height" : "100%",
-        "border" : 0
+        "width": "100%",
+        "height": "100%",
+        "border": 0
     })
-    
     az.style_layout("my_layout_rows", 1, {
-        "height" : "60px"
+        "height": "60px"
     })
-    
     az.add_text("my_layout_cells", 1, {
-        "this_class" : "my_title",
-        "text" : "COVID PREDICTOR"
+        "this_class": "my_title",
+        "text": "COVID PREDICTOR"
     })
-    
     az.style_text("my_title", 1, {
-        "font-size" : "30px",
-        "text-align" : "center"
+        "font-size": "30px",
+        "text-align": "center"
     })
-    
     az.add_layout("my_layout_cells", 2, {
         "this_class": "inner_layout",
         "row_class": "inner_layout_rows",
@@ -71,20 +60,17 @@ create_azle(function() {
         "number_of_rows": 1,
         "number_of_columns": 2
     })
-    
     az.style_layout("inner_layout", 1, {
-        "width" : "100%",
-        "height" : "100%",
-        "background" : "#f3a683",
-        "border" : 2,
-        "column_widths" : ["20%", "80%"]
+        "width": "100%",
+        "height": "100%",
+        "background": "#f3a683",
+        "border": 2,
+        "column_widths": ["20%", "80%"]
     })
-    
     az.style_layout("inner_layout_cells", 2, {
-       "background" : "#63cdda",
-       "halign" : "center"
+        "background": "#63cdda",
+        "halign": "center"
     })
-    
     az.add_layout("inner_layout_cells", 1, {
         "this_class": "ui_elements_layout",
         "row_class": "ui_elements_layout_rows",
@@ -92,104 +78,79 @@ create_azle(function() {
         "number_of_rows": 3,
         "number_of_columns": 1
     })
-    
     az.style_layout("ui_elements_layout", 1, {
-        "width" : "100%",
-        "height" : "100%",
-        "border" : 0
+        "width": "100%",
+        "height": "100%",
+        "border": 0
     })
-    
     az.all_style_layout("ui_elements_layout_cells", {
-        "halign" : "center"
+        "halign": "center"
     })
-    
     az.add_dropdown("ui_elements_layout_cells", 1, {
-    	"this_class": "my_dropdown",
-    	"title": "choose option...",
-    	"options": ['deaths', 'confirmed', 'recovered']
-	})
-	
-	az.add_slider("ui_elements_layout_cells", 2, {
-    	"this_class" : "my_slider",
-    	"text_class" : "slider_text",
-    	"default_value" : 7,
-    	"min_value" : 1,
-    	"max_value" : 30
-	})
-    
+        "this_class": "my_dropdown",
+        "title": "choose option...",
+        "options": ['deaths', 'confirmed', 'recovered']
+    })
+    az.add_slider("ui_elements_layout_cells", 2, {
+        "this_class": "my_slider",
+        "text_class": "slider_text",
+        "default_value": 7,
+        "min_value": 1,
+        "max_value": 30
+    })
     az.add_button("ui_elements_layout_cells", 3, {
         "this_class": "my_button",
         "text": "FORECAST"
     })
-    
-    
     /*********LINE CHART*************/
-    
     az.add_html("inner_layout_cells", 2, {
-        "html" : "<div id='hold_chart'></div>"
+        "html": "<div id='hold_chart'></div>"
     })
- 
     /*********FETCH DATA*************/
-      
-    fetch('https://corona-api.com/timeline')
-       .then(response => response.json())
-       .then(function(data) {
-           draw_line_chart(data, "deaths");
-           az.hold_value.fetched_data = data;
+    fetch('https://corona-api.com/timeline').then(response => response.json()).then(function(data) {
+        draw_line_chart(data, "deaths");
+        az.hold_value.fetched_data = data;
     })
-    
     /*********ADD EVENTS*************/
     az.add_event("my_dropdown", 1, {
-        "type" : "change", 
-        "function" : function() {
+        "type": "change",
+        "function": function() {
             draw_line_chart(az.hold_value.fetched_data, az.grab_value("my_dropdown", 1))
         }
     })
-    
     /*********CALL SERVICE*************/
     az.add_event("my_button", 1, {
         "type": "click",
         "function": function() {
-            
-            if(az.grab_value("my_dropdown", 1) === null) {
-                 alert("Choose an option first!")
+            if (az.grab_value("my_dropdown", 1) === null) {
+                alert("Choose an option first!")
             } else {
-            
-            az.add_spinner({
-                "this_class" : "my_spinner"
-            })
-            
-            az.style_spinner("my_spinner", 1, {
-                "section_color" : "rgb(234, 134, 133)"
-            })
-            
-            var use_horizon =  az.grab_value("my_slider", 1)
-            var x_values = get_dates_and_cases(az.hold_value.fetched_data, az.grab_value("my_dropdown", 1)).x
-            var y_values = get_dates_and_cases(az.hold_value.fetched_data, az.grab_value("my_dropdown", 1)).y
-            
-            az.call_api({
-                "url": "http://localhost:5000/predict_covid/",
-                "parameters": {
-                    horizon : use_horizon,
-                    x: JSON.stringify(x_values),
-                    y: JSON.stringify(y_values)
-                },
-                "done": function(data) {
-                    draw_forecast(JSON.parse(data))
-                    az.remove_element("my_spinner", 1)
-                }
-            })
-            
-            } 
-            
-            
+                az.add_spinner({
+                    "this_class": "my_spinner"
+                })
+                az.style_spinner("my_spinner", 1, {
+                    "section_color": "rgb(234, 134, 133)"
+                })
+                var use_horizon = az.grab_value("my_slider", 1)
+                var x_values = get_dates_and_cases(az.hold_value.fetched_data, az.grab_value("my_dropdown", 1)).x
+                var y_values = get_dates_and_cases(az.hold_value.fetched_data, az.grab_value("my_dropdown", 1)).y
+                az.call_api({
+                    "url": "http://localhost:5000/predict_covid/",
+                    "parameters": {
+                        horizon: use_horizon,
+                        x: JSON.stringify(x_values),
+                        y: JSON.stringify(y_values)
+                    },
+                    "done": function(data) {
+                        draw_forecast(JSON.parse(data))
+                        az.remove_element("my_spinner", 1)
+                    }
+                })
+            }
         }
     })
-
-})   
-
- /*********SPECIAL FUNCTIONS*************/
-
+})
+/*********SPECIAL FUNCTIONS*************/
 function get_dates_and_cases(data, choice) {
     dates = []
     other = []
@@ -203,7 +164,7 @@ function get_dates_and_cases(data, choice) {
     trace.type = 'scatter'
     return (trace)
 }
-    
+
 function draw_line_chart(data, choice) {
     var trace1 = get_dates_and_cases(data, choice)
     var data = [trace1];
@@ -261,7 +222,7 @@ function prep_forecast_data(data) {
     return (trace)
 }
 
-function draw_forecast(data) {  
+function draw_forecast(data) {
     var trace1 = get_dates_and_cases(az.hold_value.fetched_data, az.grab_value("my_dropdown", 1))
     var trace2 = prep_forecast_data(data)
     var data = [trace1, trace2];
